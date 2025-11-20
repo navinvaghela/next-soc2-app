@@ -24,35 +24,37 @@ export default function UserTable() {
       setIsNewUser(true)
     }
   }
+  console.log('ttttt', isNewUser)
 
   const save = () => {
-  if (!editing) return;
+      if (!editing) return;
 
-   
- const payloadData = {...editing, password: 12345}
-  if (isNewUser) {
-    createUser.mutate(payloadData, {
-      onSuccess: () => setShow(false),
-      onError: (err: any) => alert(err.message),
-    });
-    return
-  }
+      const payloadData = {...editing, password: 12345}
+      
+      if (isNewUser) {
+        createUser.mutate(payloadData, {
+          onSuccess: () => {setIsNewUser(false),setShow(false)},
+          onError: (err: any) => alert(err.message),
+        });
+        return
+      }
 
-  const {
-    password,
-    id,
-    createdAt,  
-    updatedAt,
-    ...payload
-  }: any = editing;
-  updateUser.mutate(
-    { id: editing.id, data: payload },
-    {
-      onSuccess: () => setShow(false),
-      onError: (err) => alert(err.message),
-    }
-  );
-};
+      const {
+        password,
+        id,
+        createdAt,  
+        updatedAt,
+        ...payload
+      }: any = editing;
+      
+      updateUser.mutate(
+        { id: editing.id, data: payload },
+        {
+          onSuccess: () => {setIsNewUser(false), setShow(false) },
+          onError: (err) => alert(err.message),
+        }
+      );
+  };
 
 
   const handleDelete = async (id: number) => {
@@ -87,7 +89,7 @@ export default function UserTable() {
               <td>{u.email}</td>
               <td>{u.role}</td>
               <td className="text-right pr-6">
-                <button className="text-blue-600 mr-4" onClick={() => openModal(u)}>Edit</button>
+                <button className="text-blue-600 mr-4" onClick={() => openModal(u, false)}>Edit</button>
                 <button className="text-red-600" onClick={() => handleDelete(u.id)}>Delete</button>
               </td>
             </tr>

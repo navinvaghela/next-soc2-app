@@ -6,14 +6,21 @@ import Link from "next/link"
 import { useLogin } from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/authStore";
 import { useUserStore } from "@/store/useUserStore";
+import { useEffect } from "react";
 
 export type LoginForm = { email: string; password: string };
 
 export default function LoginPage() {
-
+  const user = useAuthStore((s) => s.user);
   const { register, handleSubmit } = useForm();
   const router = useRouter();
   const login = useLogin();
+
+  useEffect(() => {
+    if (user) {
+      router.push(`/dashboard/${user.role}`);
+    }
+  }, [user])  
 
   const onSubmit = (data: any) => {
     login.mutate(data, {

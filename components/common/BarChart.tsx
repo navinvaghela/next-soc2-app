@@ -10,16 +10,32 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useUsers } from "@/hooks/useUsers";
+import { useMemo } from "react";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 export default function BarChart() {
+
+    const { data: users = [] } = useUsers();
+  
+    const usersCount = useMemo(() => {
+      return users.reduce(
+        (acc: any, user: any) => {
+          const role = user.role || "unknown";
+          acc[role] = (acc[role] || 0) + 1;
+          return acc;
+        },
+        { employer: 0, auditor: 0, contractor: 0 }
+      );
+    }, [users]); 
+
   const data = {
-    labels: ["2019", "2020", "2021", "2022", "2023"],
+    labels: ["2025", "2026", "2027","2028"],
     datasets: [
-      { label: "Employers", data: [5, 8, 12, 18, 30], backgroundColor: "rgba(59,130,246,0.8)" },
-      { label: "Auditors", data: [2, 3, 6, 9, 18], backgroundColor: "rgba(16,185,129,0.8)" },
-      { label: "Contractors", data: [1, 2, 3, 8, 12], backgroundColor: "rgba(234,179,8,0.8)" },
+      { label: "Employers", data: [usersCount.employer], backgroundColor: "rgba(59,130,246,0.8)" },
+      { label: "Auditors", data: [usersCount.auditor], backgroundColor: "rgba(16,185,129,0.8)" },
+      { label: "Contractors", data: [usersCount.contractor], backgroundColor: "rgba(234,179,8,0.8)" },
     ],
   };
 
